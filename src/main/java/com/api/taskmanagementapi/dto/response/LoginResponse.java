@@ -1,8 +1,8 @@
-package com.api.taskmanagementapi.dto.respone;
+package com.api.taskmanagementapi.dto.response;
 
 import java.time.LocalDateTime;
 
-public record LoginRespone(
+public record LoginResponse(
         Integer id,
         String username,
         String email,

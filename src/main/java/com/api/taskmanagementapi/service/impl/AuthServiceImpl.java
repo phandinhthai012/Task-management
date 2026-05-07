@@ -1,7 +1,7 @@
 package com.api.taskmanagementapi.service.impl;
 
 import com.api.taskmanagementapi.dto.request.LoginRequest;
-import com.api.taskmanagementapi.dto.respone.LoginRespone;
+import com.api.taskmanagementapi.dto.response.LoginResponse;
 import com.api.taskmanagementapi.entity.User;
 import com.api.taskmanagementapi.repository.UserRepository;
 import com.api.taskmanagementapi.security.JwtUtil;
@@ -17,7 +17,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
 
     @Override
-    public LoginRespone login(LoginRequest loginRequest) {
+    public LoginResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.email())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -25,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Invalid password");
         }
         String token = jwtUtil.generateToken(user);
-        return new LoginRespone(
+        return new LoginResponse(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),

@@ -1,7 +1,7 @@
 package com.api.taskmanagementapi.service.impl;
 
 import com.api.taskmanagementapi.dto.request.UserRequest;
-import com.api.taskmanagementapi.dto.respone.UserRespone;
+import com.api.taskmanagementapi.dto.response.UserResponse;
 import com.api.taskmanagementapi.entity.User;
 import com.api.taskmanagementapi.repository.UserRepository;
 import com.api.taskmanagementapi.service.UserService;
@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     @Override
     @Transactional
-    public UserRespone createUser(UserRequest request, String clinetIp) {
+    public UserResponse createUser(UserRequest request, String clinetIp) {
         if (userRepository.existsByEmail(request.email())) {
             throw new IllegalArgumentException("Email already exists");
         }
@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
         LocalDateTime now = LocalDateTime.now();
         user.setCreatedAt(now);
         User savedUser = userRepository.save(user);
-        return new UserRespone(
+        return new UserResponse(
                 savedUser.getId(),
                 savedUser.getUsername(),
                 savedUser.getEmail(),
@@ -38,17 +38,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRespone getUserById(Integer id) {
+    public UserResponse getUserById(Integer id) {
         return null;
     }
 
     @Override
-    public List<UserRespone> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
         return List.of();
     }
 
     @Override
-    public UserRespone updateUser(Integer id, UserRequest request) {
+    public UserResponse updateUser(Integer id, UserRequest request) {
         return null;
     }
 
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRespone Login(String email, String password) {
+    public UserResponse Login(String email, String password) {
         return null;
     }
 
