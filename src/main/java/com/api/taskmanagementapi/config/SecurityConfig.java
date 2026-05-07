@@ -36,7 +36,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/users/**",
-                                "api/healthCheck"
+                                "/api/healthCheck/**"
                         ).permitAll() // Cho phép đăng ký/đăng nhập
                         .anyRequest().authenticated() // Còn lại phải login
                 );

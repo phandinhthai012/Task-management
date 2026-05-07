@@ -3,9 +3,11 @@ package com.api.taskmanagementapi.service.impl;
 import com.api.taskmanagementapi.dto.request.UserRequest;
 import com.api.taskmanagementapi.dto.response.UserResponse;
 import com.api.taskmanagementapi.entity.User;
+import com.api.taskmanagementapi.exception.ResourceAlreadyExistsException;
 import com.api.taskmanagementapi.repository.UserRepository;
 import com.api.taskmanagementapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,16 +18,17 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     @Override
     @Transactional
     public UserResponse createUser(UserRequest request, String clinetIp) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new ResourceAlreadyExistsException("Email is already in use: " + request.email());
         }
         User user = new User();
         user.setUsername(request.username());
         user.setEmail(request.email());
-        user.setPassword(request.password());
+        user.setPassword(passwordEncoder.encode(request.password()));
         LocalDateTime now = LocalDateTime.now();
         user.setCreatedAt(now);
         User savedUser = userRepository.save(user);
