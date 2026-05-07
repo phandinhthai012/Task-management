@@ -26,5 +26,7 @@ public class JwtFilter  implements Filter {
                 throw new IllegalArgumentException("Invalid token");
             }
         }
+        // DÒNG QUAN TRỌNG BỊ THIẾU: Cho phép request đi tiếp tới Controller
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 }
