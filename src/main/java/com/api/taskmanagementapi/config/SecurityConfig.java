@@ -44,3 +44,28 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
+
+
+//@Bean
+//public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
+//    http
+//            .csrf(AbstractHttpConfigurer::disable)
+//            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//            .authorizeHttpRequests(auth -> auth
+//                    // 1. Cho phép Đăng ký (POST /api/users) không cần token
+//                    .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+//
+//                    // 2. Các endpoint xác thực và kiểm tra hệ thống vẫn mở tự do
+//                    .requestMatchers("/api/auth/**", "/api/healthCheck/**").permitAll()
+//
+//                    // 3. Các hành động khác của User (GET, PUT, DELETE) bắt buộc phải có token
+//                    .requestMatchers("/api/users/**").authenticated()
+//
+//                    // 4. Tất cả các request khác cũng phải login
+//                    .anyRequest().authenticated()
+//            );
+//
+//    http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+//    return http.build();
+//}

@@ -36,12 +36,7 @@ public class UserServiceImpl implements UserService {
         LocalDateTime now = LocalDateTime.now();
         user.setCreatedAt(now);
         User savedUser = userRepository.save(user);
-        return new UserResponse(
-                savedUser.getId(),
-                savedUser.getUsername(),
-                savedUser.getEmail(),
-                savedUser.getCreatedAt()
-        );
+        return mapToResponse(savedUser);
     }
 
     @Override
@@ -59,25 +54,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponse updateUser(Integer id, UpdateUserRequest request){
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         user.setUsername(request.username());
         User updatedUser = userRepository.save(user);
+        // Nếu client gửi password mới thì tiến hành cập nhật
+        if (request.password() != null && !request.password().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.password()));
+        }
         return mapToResponse(updatedUser);
     }
 
     @Override
+    @Transactional
     public Boolean deleteUser(Integer id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         userRepository.delete(user);
         return true;
-    }
-
-    @Override
-    public UserResponse Login(String email, String password) {
-        return null;
     }
 
     // Helper method để chuyển đổi Entity sang DTO

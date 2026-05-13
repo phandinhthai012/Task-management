@@ -12,6 +12,5 @@ public interface UserService {
    List<UserResponse> getAllUsers();
    UserResponse updateUser(Integer id, UpdateUserRequest request);
    Boolean deleteUser(Integer id);
-   UserResponse Login(String email, String password);
 
 }
