@@ -1,9 +1,11 @@
 package com.api.taskmanagementapi.service.impl;
 
+import com.api.taskmanagementapi.dto.request.UpdateUserRequest;
 import com.api.taskmanagementapi.dto.request.UserRequest;
 import com.api.taskmanagementapi.dto.response.UserResponse;
 import com.api.taskmanagementapi.entity.User;
 import com.api.taskmanagementapi.exception.ResourceAlreadyExistsException;
+import com.api.taskmanagementapi.exception.ResourceNotFoundException;
 import com.api.taskmanagementapi.repository.UserRepository;
 import com.api.taskmanagementapi.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -42,22 +46,33 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUserById(Integer id) {
-        return null;
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceAlreadyExistsException("User not found with id: " + id));
+        return mapToResponse(user);
     }
 
     @Override
     public List<UserResponse> getAllUsers() {
-        return List.of();
+        return userRepository.findAll().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public UserResponse updateUser(Integer id, UserRequest request) {
-        return null;
+    public UserResponse updateUser(Integer id, UpdateUserRequest request){
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        user.setUsername(request.username());
+        User updatedUser = userRepository.save(user);
+        return mapToResponse(updatedUser);
     }
 
     @Override
     public Boolean deleteUser(Integer id) {
-        return null;
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        userRepository.delete(user);
+        return true;
     }
 
     @Override
@@ -65,5 +80,13 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-
+    // Helper method để chuyển đổi Entity sang DTO
+    private UserResponse mapToResponse(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .createdAt(user.getCreatedAt())
+                .build();
+    }
 }

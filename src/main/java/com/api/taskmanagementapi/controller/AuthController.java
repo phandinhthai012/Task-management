@@ -1,6 +1,7 @@
 package com.api.taskmanagementapi.controller;
 
 import com.api.taskmanagementapi.dto.request.LoginRequest;
+import com.api.taskmanagementapi.dto.response.ApiResponse;
 import com.api.taskmanagementapi.dto.response.LoginResponse;
 import com.api.taskmanagementapi.service.AuthService;
 import jakarta.validation.Valid;
@@ -20,9 +21,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
         LoginResponse response = authService.login(loginRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Login successful", response));
     }
 
 }
