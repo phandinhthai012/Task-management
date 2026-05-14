@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDateTime;
 
@@ -18,14 +20,16 @@ import java.time.LocalDateTime;
         }
 )
 @Data
-public class User {
+@EqualsAndHashCode(callSuper = true)
+
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Nationalized
     private String username;
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is mandatory")
     private String email;
     private String password;
-    private LocalDateTime createdAt;
 }

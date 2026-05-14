@@ -20,7 +20,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<UserResponse>> createUser(@RequestBody UserRequest request) {
+    public ResponseEntity<ApiResponse<UserResponse>> createUser(@RequestBody @Valid UserRequest request) {
         String clientIp = "unknown";
         UserResponse response = userService.createUser(request, clientIp);
         return ResponseEntity.status(HttpStatus.CREATED)

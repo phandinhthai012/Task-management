@@ -33,8 +33,6 @@ public class UserServiceImpl implements UserService {
         user.setUsername(request.username());
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
-        LocalDateTime now = LocalDateTime.now();
-        user.setCreatedAt(now);
         User savedUser = userRepository.save(user);
         return mapToResponse(savedUser);
     }
@@ -42,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserById(Integer id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceAlreadyExistsException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         return mapToResponse(user);
     }
 
@@ -59,11 +57,13 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         user.setUsername(request.username());
-        User updatedUser = userRepository.save(user);
+
         // Nếu client gửi password mới thì tiến hành cập nhật
         if (request.password() != null && !request.password().isBlank()) {
             user.setPassword(passwordEncoder.encode(request.password()));
         }
+
+        User updatedUser = userRepository.save(user);
         return mapToResponse(updatedUser);
     }
 

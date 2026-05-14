@@ -1,5 +1,7 @@
 package com.api.taskmanagementapi.config;
 
+import com.api.taskmanagementapi.security.CustomAccessDeniedHandler;
+import com.api.taskmanagementapi.security.JwtAuthenticationEntryPoint;
 import com.api.taskmanagementapi.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,13 +27,18 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, CustomAccessDeniedHandler customAccessDeniedHandler) throws Exception {
 
         http
                 // Tắt CSRF (Cross-Site Request Forgery) để các request POST/PUT/DELETE có thể chạy qua
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Cấu hình phân quyền request
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint) // Bắt lỗi 401
+                        .accessDeniedHandler(customAccessDeniedHandler)        // Bắt lỗi 403
+                )
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/**",
